@@ -1,31 +1,51 @@
-from Tkinter import * 
+from Tkinter import *
 
+from PIL import Image, ImageTk
 
 
 mainUi = Tk()
-
-#If you have a large number of widgets, like it looks like you will for your
-#game you can specify the attributes for all widgets simply like this.
+mainUi.title("IUK_Management")
 
 screen_width = mainUi.winfo_screenwidth()/4
 screen_height = mainUi.winfo_screenheight()/2
-mainUi.title('IUK Management')
-#You can set the geometry attribute to change the root windows size
+
 mainUi.geometry('{}x{}'.format(screen_width, screen_height))
-mainUi.resizable(0, 0) #Don't allow resizing in the x or y direction
-mainUiLabel = Label(text = "IUK Management")
 
-photo = PhotoImage(file = "/home/joker/Schreibtisch/IUK_Management/res/elw.png")
-mainFrame = Frame(mainUi)
-Label(mainUi, image=photo, height=screen_height, width=screen_width).place(x=0,y=0)
+class MainUi(Frame):
+    def __init__(self, master, *pargs):
+        Frame.__init__(self, master, *pargs)
+
+        self.image = Image.open("/home/joker/Schreibtisch/IUK_Management/res/elw.png")
+        self.img_copy= self.image.copy()
 
 
-login = Label(mainUi, text = "Login")
-login.place(x= 100, y = 100)
-login.pack(pady=10, side=TOP)
-login = Entry(mainUi)
-login.pack(pady=20, side=TOP)
+        self.background_image = ImageTk.PhotoImage(self.image)
 
+        self.background = Label(self, image=self.background_image)
+        self.background.pack(fill=BOTH, expand=YES)
+        self.background.bind('<Configure>', self._resize_image)
+
+        self.label = Label(master, text="login")
+        
+
+        
+
+    def _resize_image(self,event):
+
+        new_width = event.width
+        new_height = event.height
+
+        self.image = self.img_copy.resize((new_width, new_height))
+
+        self.background_image = ImageTk.PhotoImage(self.image)
+        self.background.configure(image =  self.background_image)
+
+
+
+e = MainUi(mainUi)
+e.pack(fill=BOTH, expand=YES)
+label = MainUi(mainUi)
+label.pack(pady=100, side=TOP)
 
 
 mainUi.mainloop()
