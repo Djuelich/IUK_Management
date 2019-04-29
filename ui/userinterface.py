@@ -1,51 +1,23 @@
-from Tkinter import *
+import sys
+from PyQT5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMainwindow, QLabel, QWidget
+from PyQt5.QtCore import QSize
 
-from PIL import Image, ImageTk
+class Mainwindow(QMainwindow):
+    def __init__(self):
+        #Konstruktor von QMainwindow aufrufen
+        super().__init__()
 
+        #Fenstergröße und Titel einstellen
+        self.setMinimumSize(Qsize(800, 600))
+        self.setWindowTitle('IUK Management')
 
-mainUi = Tk()
-mainUi.title("IUK_Management")
+                #Title-Widget erzeugen und in Fenster einbetten
+                title = QLabel('IUK Management', self)
+                title.setAlignment(QTCore.QT.AlignCenter)
 
-screen_width = mainUi.winfo_screenwidth()/4
-screen_height = mainUi.winfo_screenheight()/2
-
-mainUi.geometry('{}x{}'.format(screen_width, screen_height))
-
-class MainUi(Frame):
-    def __init__(self, master, *pargs):
-        Frame.__init__(self, master, *pargs)
-
-        self.image = Image.open("/home/joker/Schreibtisch/IUK_Management/res/elw.png")
-        self.img_copy= self.image.copy()
-
-
-        self.background_image = ImageTk.PhotoImage(self.image)
-
-        self.background = Label(self, image=self.background_image)
-        self.background.pack(fill=BOTH, expand=YES)
-        self.background.bind('<Configure>', self._resize_image)
-
-        self.label = Label(master, text="login")
-        
-
-        
-
-    def _resize_image(self,event):
-
-        new_width = event.width
-        new_height = event.height
-
-        self.image = self.img_copy.resize((new_width, new_height))
-
-        self.background_image = ImageTk.PhotoImage(self.image)
-        self.background.configure(image =  self.background_image)
-
-
-
-e = MainUi(mainUi)
-e.pack(fill=BOTH, expand=YES)
-label = MainUi(mainUi)
-label.pack(pady=100, side=TOP)
-
-
-mainUi.mainloop()
+#Fenster öffnen; das Programm läuft, bis das Fenster geschlossen wird
+app = QTWidget.QApplication(sys.argv)
+win = MyWindow()
+win.show()
+sys.exit(app.exec_())
