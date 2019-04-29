@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import MySQLdb
 import dis
+import importlib
 
 try:
     # Connect
@@ -11,12 +12,9 @@ try:
 
     cursor = db.cursor()
 
+
     # Execute SQL select statement
     cursor.execute("SELECT * FROM Fahrzeug")
-
-    # Commit your changes if writing
-    # In this case, we are only reading data
-    # db.commit()
 
     # Get the number of rows in the resultset
     numrows = cursor.rowcount
@@ -27,7 +25,7 @@ try:
         print ("Fahrzeugtyp:", row[0], "Funkrufnummer:", row[1], "Besatzung:", row[2], "Status:", row[3], "Organisation:", row[4])
 
 except BaseException as ex:
-    print('Fehler', ex)
+    print('Fehler bei der Verbindung zur Datenbank. Überprüfen sie Link, Benutzer, Passwort und ausgewählte Datenbank', ex)
 finally:
     # Close the connection
     db.close()
