@@ -35,8 +35,6 @@ finally:
     # Close the connection
     db.close()
 
-
-
 class MyWindow(QMainWindow):
     def __init__(self):
         global txts
@@ -49,6 +47,8 @@ class MyWindow(QMainWindow):
         self.setWindowTitle('IUK Management')        
 
         #GridLayout für Widget in Main-Window (Layout von Main-Window kann nicht verändert werden)
+
+
 
 #Fenster öffnen; das Programm läuft, bis das Fenster geschlossen wird
 app = QtWidgets.QApplication(sys.argv)
