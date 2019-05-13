@@ -5,8 +5,8 @@ import importlib
 
 import sys
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QAction, QTableWidget,QTableWidgetItem,QVBoxLayout
-from PyQt5.QtCore import QSize, pyqtSlot
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QAction, QTableWidget,QTableWidgetItem,QVBoxLayout, QLabel
+from PyQt5.QtCore import QSize, pyqtSlot, Qt
 from PyQt5.QtGui import QIcon
 
 
@@ -20,10 +20,17 @@ try:
 
     cursor = db.cursor()
 
+    cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'RTW'")
+    numrows2 = cursor.rowcount
+    
+    cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'KTW'")
+    numrows3 = cursor.rowcount
+
+    cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'NEF'")
+    numrows4 = cursor.rowcount
 
     # Execute SQL select statement
     cursor.execute("SELECT * FROM Fahrzeug")
-
     # Get the number of rows in the resultset
     numrows = cursor.rowcount
 
@@ -44,11 +51,13 @@ class App(QWidget):
 
     def __init__(self):
         super().__init__()
+        screen = app.primaryScreen()
+        size = screen.size()
         self.title = 'IUK-Management'
         self.left = 0
         self.top = 0
-        self.width = 800
-        self.height = 600
+        self.width = size.width()/2
+        self.height = size.height()/2
         self.initUI()
         
     def initUI(self):
@@ -56,10 +65,16 @@ class App(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         
         self.createTable()
+        self.creatCounter()
 
         # Add box layout, add table to box layout and add box layout to widget
         self.layout = QVBoxLayout()
-        self.layout.addWidget(self.tableWidget) 
+        self.layout.addWidget(self.tableWidget)
+        self.layout.setAlignment(Qt.AlignCenter) 
+        self.layout.addWidget(self.itemCounter1)
+        self.layout.addWidget(self.itemCounter2)
+        self.layout.addWidget(self.itemCounter3)
+        self.layout.addWidget(self.itemCounter4)
         self.setLayout(self.layout) 
 
         # Show widget
@@ -90,6 +105,18 @@ class App(QWidget):
             self.tableWidget.setItem(line,2, QTableWidgetItem(row[2]))
             self.tableWidget.setItem(line,3, QTableWidgetItem(row[3]))
             self.tableWidget.setItem(line,4, QTableWidgetItem(row[4]))
+
+    def creatCounter(self):
+        self.itemCounter1 = QLabel()
+        self.itemCounter2 = QLabel()
+        self.itemCounter3 = QLabel()
+        self.itemCounter4 = QLabel()
+        self.itemCounter1.setText("Anzahl Fahrzeuge: {}".format(numrows))
+        self.itemCounter2.setText("Anzahl RTWs: {}".format(numrows2))
+        self.itemCounter3.setText("Anzahl KTWs: {}".format(numrows3))
+        self.itemCounter4.setText("Anzahl NEFs: {}".format(numrows4))
+
+
  
 if __name__ == '__main__':
     app = QApplication(sys.argv)
