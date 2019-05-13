@@ -12,9 +12,9 @@ class Mainwindow(QMainwindow):
         self.setMinimumSize(Qsize(800, 600))
         self.setWindowTitle('IUK Management')
 
-                #Title-Widget erzeugen und in Fenster einbetten
-                title = QLabel('IUK Management', self)
-                title.setAlignment(QTCore.QT.AlignCenter)
+        #Title-Widget erzeugen und in Fenster einbetten
+        title = QLabel('IUK Management', self)
+        title.setAlignment(QTCore.QT.AlignCenter)
 
 #Fenster öffnen; das Programm läuft, bis das Fenster geschlossen wird
 app = QTWidget.QApplication(sys.argv)
