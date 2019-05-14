@@ -118,6 +118,7 @@ class App(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
+    ex.update()
     sys.exit(app.exec_())  
     db.close()
 
