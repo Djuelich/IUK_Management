@@ -5,45 +5,9 @@ import importlib
 
 import sys
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QAction, QTableWidget,QTableWidgetItem,QVBoxLayout, QLabel
-from PyQt5.QtCore import QSize, pyqtSlot, Qt
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QAction, QTableWidget,QTableWidgetItem,QVBoxLayout, QLabel,QPushButton
+from PyQt5.QtCore import QSize, pyqtSlot, Qt, QTimer
 from PyQt5.QtGui import QIcon
-
-
-#Database-connection-section
-try:
-    # Connect
-    db = MySQLdb.connect(host="db4free.net",    
-                         user="elwseg",
-                         passwd="Scarred_92",
-                         db="iukmanagement")
-
-    cursor = db.cursor()
-
-    cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'RTW'")
-    numrows2 = cursor.rowcount
-    
-    cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'KTW'")
-    numrows3 = cursor.rowcount
-
-    cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'NEF'")
-    numrows4 = cursor.rowcount
-
-    # Execute SQL select statement
-    cursor.execute("SELECT * FROM Fahrzeug")
-    # Get the number of rows in the resultset
-    numrows = cursor.rowcount
-
-    # Get and display one row at a time
-    """for x in range(0, numrows):
-        row = cursor.fetchone()
-        print ("Fahrzeugtyp:", row[0], "Funkrufnummer:", row[1], "Besatzung:", row[2], "Status:", row[3], "Organisation:", row[4])
-    """
-except BaseException as ex:
-    print('Fehler bei der Verbindung zur Datenbank. Überprüfen sie Link, Benutzer, Passwort und ausgewählte Datenbank', ex)
-finally:
-    # Close the connection
-    db.close()
 
 
 #Window and Table-section
@@ -59,11 +23,10 @@ class App(QWidget):
         self.width = size.width()/2
         self.height = size.height()/2
         self.initUI()
-        
+
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        
         self.createTable()
         self.creatCounter()
 
@@ -82,7 +45,8 @@ class App(QWidget):
 
     #try to create a table with DBS-data
     def createTable(self):
-       # Create table
+        # Create table
+        self.databaseConnection()
         self.tableWidget = QTableWidget()
         self.tableWidget.setRowCount(numrows+1)
         self.tableWidget.setColumnCount(5)
@@ -116,9 +80,44 @@ class App(QWidget):
         self.itemCounter3.setText("Anzahl KTWs: {}".format(numrows3))
         self.itemCounter4.setText("Anzahl NEFs: {}".format(numrows4))
 
+    def databaseConnection(self):
+        global numrows
+        global numrows2
+        global numrows3
+        global numrows4
+        global db
+        global cursor
+        #Database-connection-section
+        try:
+            # Connect
+            db = MySQLdb.connect(host="db4free.net",    
+                                user="elwseg",
+                                passwd="Scarred_92",
+                                db="iukmanagement")
 
+            cursor = db.cursor()
+
+            cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'RTW'")
+            numrows2 = cursor.rowcount
+    
+            cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'KTW'")
+            numrows3 = cursor.rowcount
+
+            cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'NEF'")
+            numrows4 = cursor.rowcount
+
+            # Execute SQL select statement
+            cursor.execute("SELECT * FROM Fahrzeug")
+            # Get the number of rows in the resultset
+            numrows = cursor.rowcount
+
+   
+        except BaseException as ex:
+            print('Fehler bei der Verbindung zur Datenbank. Überprüfen sie Link, Benutzer, Passwort und ausgewählte Datenbank', ex)
  
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec_())  
+    db.close()
+
