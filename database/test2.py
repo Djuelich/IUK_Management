@@ -23,6 +23,10 @@ class App(QWidget):
         self.width = size.width()/2
         self.height = size.height()/2
         self.initUI()
+        print("initUI-Init aufruf")
+        self.setLayout(self.layout)
+        print("setLayout aufruf") 
+        print("init aufruf")
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -38,15 +42,16 @@ class App(QWidget):
         self.layout.addWidget(self.itemCounter2)
         self.layout.addWidget(self.itemCounter3)
         self.layout.addWidget(self.itemCounter4)
-        self.setLayout(self.layout) 
 
         # Show widget
         self.show()
+        print("initUI aufruf")
+
 
     #try to create a table with DBS-data
     def createTable(self):
         # Create table
-        self.databaseConnection()
+        self.getVehicles()
         self.tableWidget = QTableWidget()
         self.tableWidget.setRowCount(numrows+1)
         self.tableWidget.setColumnCount(5)
@@ -69,6 +74,7 @@ class App(QWidget):
             self.tableWidget.setItem(line,2, QTableWidgetItem(row[2]))
             self.tableWidget.setItem(line,3, QTableWidgetItem(row[3]))
             self.tableWidget.setItem(line,4, QTableWidgetItem(row[4]))
+        print("createTable aufruf")
 
     def creatCounter(self):
         self.itemCounter1 = QLabel()
@@ -79,14 +85,10 @@ class App(QWidget):
         self.itemCounter2.setText("Anzahl RTWs: {}".format(numrows2))
         self.itemCounter3.setText("Anzahl KTWs: {}".format(numrows3))
         self.itemCounter4.setText("Anzahl NEFs: {}".format(numrows4))
+        print("createCounter aufruf")
 
     def databaseConnection(self):
-        global numrows
-        global numrows2
-        global numrows3
-        global numrows4
         global db
-        global cursor
         #Database-connection-section
         try:
             # Connect
@@ -95,30 +97,67 @@ class App(QWidget):
                                 passwd="Scarred_92",
                                 db="iukmanagement")
 
-            cursor = db.cursor()
-
-            cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'RTW'")
-            numrows2 = cursor.rowcount
-    
-            cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'KTW'")
-            numrows3 = cursor.rowcount
-
-            cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'NEF'")
-            numrows4 = cursor.rowcount
-
-            # Execute SQL select statement
-            cursor.execute("SELECT * FROM Fahrzeug")
-            # Get the number of rows in the resultset
-            numrows = cursor.rowcount
-
-   
         except BaseException as ex:
             print('Fehler bei der Verbindung zur Datenbank. Überprüfen sie Link, Benutzer, Passwort und ausgewählte Datenbank', ex)
- 
-if __name__ == '__main__':
+
+        print("databaseConnection aufruf")
+
+    def getVehicles(self):
+        global cursor
+        global numrows
+        global numrows2
+        global numrows3
+        global numrows4
+
+        self.databaseConnection()
+
+        cursor = db.cursor()
+
+        cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'RTW'")
+        numrows2 = cursor.rowcount
+    
+        cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'KTW'")
+        numrows3 = cursor.rowcount
+
+        cursor.execute("SELECT * FROM Fahrzeug WHERE Fahrzeugtyp = 'NEF'")
+        numrows4 = cursor.rowcount
+
+        # Execute SQL select statement
+        cursor.execute("SELECT * FROM Fahrzeug")
+        # Get the number of rows in the resultset
+        numrows = cursor.rowcount
+
+        print("getVehicles aufruf")
+
+def main():
+    global app
+    global ex
+
     app = QApplication(sys.argv)
+    print("app = QAPP")
     ex = App()
+    print("ex=APP()")
     ex.update()
-    sys.exit(app.exec_())  
+    print("ex.update()")
+    sys.exit(app.exec_())
+    print("sys.exit")  
     db.close()
 
+if __name__ == '__main__':
+    main()
+
+
+
+
+"""if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    print("app = QAPP")
+    ex = App()
+    print("ex=APP()")
+    ex.update()
+    print("ex.update()")
+    sys.exit(app.exec_())
+    print("sys.exit")  
+    db.close()
+
+"""
